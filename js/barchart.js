@@ -45,14 +45,20 @@ const data1 = [
 ];
 
 // bar chart with csv data
-const data2 = d3.csv("/data/barchart.csv").then((data)) = {
-  for (var i=0; i < data.length;i++) {
-    console.log(data[i].name);
-    console.log(data[i].score);
-  }
-}
-
-console.log(data);
+d3.csv("/data/barchart.csv").then((data) => {
+   svg2.selectAll(".bar")
+    .data(data)
+    .enter()  
+    .append("rect")
+    .attr("class", "bar")
+     .attr("x", (d,i) => xScale1(i))
+     .attr("y", (d) => yScale1(d.score))
+     .attr("height", (d) => (height - margin.bottom) - yScale1(d.score))
+     .attr("width", xScale1.bandwidth())
+     .on("mouseover", mouseover1) 
+     .on("mousemove", mousemove1)
+     .on("mouseleave", mouseleave1);
+});
 
 
 
@@ -89,6 +95,20 @@ svg1.append("g") // g is the placeholder svg
 
 // TODO: What does each line of this code do? 
 svg1.append("g") // g is the placeholder svg
+    .attr("transform", `translate(0,${height - margin.bottom})`) // moves the x-axis to the bottom of the svg
+    .call(d3.axisBottom(xScale1) // built in function for the bottom axis given the scale function
+            .tickFormat(i => data1[i].name)) //  sets the ticks to the names of each category
+    .attr("font-size", '20px'); // sets the font size to 20pixels
+
+
+    // TODO: What does each line of this code do?  
+svg2.append("g") // g is the placeholder svg
+   .attr("transform", `translate(${margin.left}, 0)`) // moves the y-axis inisde to the left margin
+   .call(d3.axisLeft(yScale1)) // built in function for left axis given the scale function defined above
+   .attr("font-size", '20px');  // sets the font size to 20 pixels
+
+// TODO: What does each line of this code do? 
+svg2.append("g") // g is the placeholder svg
     .attr("transform", `translate(0,${height - margin.bottom})`) // moves the x-axis to the bottom of the svg
     .call(d3.axisBottom(xScale1) // built in function for the bottom axis given the scale function
             .tickFormat(i => data1[i].name)) //  sets the ticks to the names of each category
@@ -145,20 +165,9 @@ svg1.selectAll(".bar") // selects all the bars in the char
      .on("mousemove", mousemove1) // looks for a mousemove event
      .on("mouseleave", mouseleave1); // looks for a mouseleave event
 
-// i tried to make the second bar chart but it's not showing up and i am confused
 
-svg2.selectAll(".bar")
-   .data(data2)
-   .enter()  
-   .append("rect")
-     .attr("class", "bar")
-     .attr("x", (d,i) => xScale1(i))
-     .attr("y", (d) => yScale1(d.score))
-     .attr("height", (d) => (height - margin.bottom) - yScale1(d.score))
-     .attr("width", xScale1.bandwidth())
-     .on("mouseover", mouseover1) 
-     .on("mousemove", mousemove1)
-     .on("mouseleave", mouseleave1);
+
+
 
 
 
